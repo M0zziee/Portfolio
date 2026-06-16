@@ -1,4 +1,4 @@
-const tabs = ["home", "about", "projects", "skills", "contact"]
+const tabs = ["home", "projects", "contact"];
 
 const neofetchInfo = [
   "User: Mozzy",
@@ -8,14 +8,14 @@ const neofetchInfo = [
   "Role: Full-Stack Developer",
   "Location: Indonesia : Garut, Jawa-barat",
   "Uptime: 1 years 4 months",
-]
+];
 
 const skills = {
   languages: ["JavaScript", "TypeScript", "Python", "Go", "Rust"],
   frontend: ["React", "Next.js", "Tailwind CSS", "shadcn/ui", "Radix UI"],
   backend: ["Node.js", "Express", "PostgreSQL", "Redis"],
   tools: ["Git", "Docker", "Neovim", "Figma"],
-}
+};
 
 const projects = [
   {
@@ -72,17 +72,16 @@ const projects = [
     date: "2026-05-20T16:10:00",
     name: "latest-project -> cli-toolkit",
   },
-]
+];
 
 const aboutLines = [
-  "Hi, I'm Mozzy — a full-stack developer who builds",
-  "performant, pixel-perfect web experiences.",
-  "",
-  "I work across the stack with React, Node.js,",
-  "and a growing interest in systems programming.",
-  "",
-  "When I'm not coding, I'm tweaking my Neovim config",
-  "or contributing to open source.",
-]
+  "Hi, I'm Mozzy a Full-Stack Developer passionate about building performant, scalable, and Pixelperfect web experiences.",
+  "I enjoy turning ideas into products by working across the stack with React, Node.js, and modern web technologies, focusing on clean architecture and thoughtful user experiences.",
+  " ",
+  "Beyond web development, I'm continuously exploring systems programming and low-level technologies to better understand how software works under the hood.",
+  " ",
+  "When I'm not coding, you'll probably find me customizing my Neovim setup, experimenting with Linux, or contributing to",
+  "open-source projects.",
+];
 
-export { tabs, neofetchInfo, skills, projects, aboutLines }
+export { tabs, neofetchInfo, skills, projects, aboutLines };

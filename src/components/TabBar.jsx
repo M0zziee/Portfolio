@@ -4,7 +4,7 @@ function TabBar({ tabs, activeTab, onChange, className }) {
   return (
     <div
       data-slot="tab-bar"
-      className={cn("flex items-center border border-border bg-background", className)}
+      className={cn("sticky top-0 z-50 flex items-center border border-border bg-background", className)}
     >
       {tabs.map((tab) => (
         <button

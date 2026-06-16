@@ -1,16 +1,18 @@
 # Sections & Data
 
-Each tab in the portfolio renders a **section component** from `src/sections/`. Sections are wired to tabs in `App.jsx` and use data from `src/data/portfolio.js`.
+The portfolio is a **single-page layout** with tab-based navigation. Sections are wired to tabs in `App.jsx` and use data from `src/data/portfolio.js`.
 
 ## Section Components
 
 | File | Tab | Description |
 |---|---|---|
-| `HomeSection.jsx` | home | ASCII art logo + neofetch card + typewriter welcome |
-| `AboutSection.jsx` | about | `cat about.md` styled bio |
+| `HomeSection.jsx` | home | ASCII art logo, GIF with PixelTransition, neofetch card, typewriter welcome |
+| `AboutSection.jsx` | home | `cat about.md` styled bio — rendered below HomeSection |
+| `SkillsSection.jsx` | home | Skills grouped by category with badges — rendered below AboutSection |
 | `ProjectsSection.jsx` | projects | `ls -la` listing of portfolio projects |
-| `SkillsSection.jsx` | skills | Skills grouped by category with badges |
 | `ContactSection.jsx` | contact | Terminal-styled contact form (`mail --send`) |
+
+> **Note:** The **home** tab renders three sections stacked: `HomeSection` → `AboutSection` → `SkillsSection`. This was done to consolidate the landing page while keeping each section as a self-contained component.
 
 ## Data Model
 
@@ -18,7 +20,7 @@ All portfolio data is defined in `src/data/portfolio.js`.
 
 ### `tabs`
 ```js
-const tabs = ["home", "about", "projects", "skills", "contact"]
+const tabs = ["home", "projects", "contact"]
 ```
 Controls the TabBar labels and the `activeTab` state in `App.jsx`.
 

@@ -19,6 +19,8 @@ import { TerminalWindow } from "@/components/TerminalWindow"
 | `className` | `string` | — | Additional Tailwind classes |
 | `children` | `ReactNode` | — | Content inside the window |
 
+**Padding:** `p-3 sm:p-4` — reduced on mobile for more content space.
+
 **Example:**
 ```jsx
 <TerminalWindow title="~/projects" statusBar="NORMAL  UTF-8">
@@ -39,7 +41,7 @@ Renders:
 
 ## TabBar
 
-Terminal-style tab navigation. Each tab is a bordered button.
+Terminal-style tab navigation. Each tab is a bordered button. Sticks to the top of the viewport when scrolling.
 
 ```jsx
 import { TabBar } from "@/components/TabBar"
@@ -52,10 +54,12 @@ import { TabBar } from "@/components/TabBar"
 | `onChange` | `(tab: string) => void` | — | Called when a tab is clicked |
 | `className` | `string` | — | Additional Tailwind classes |
 
+**Positioning:** `sticky top-0 z-50` — stays visible as the user scrolls.
+
 **Example:**
 ```jsx
 const [tab, setTab] = useState("home")
-<TabBar tabs={["home", "about", "projects"]} activeTab={tab} onChange={setTab} />
+<TabBar tabs={["home", "projects", "contact"]} activeTab={tab} onChange={setTab} />
 ```
 
 ---
@@ -79,13 +83,13 @@ import { ThemeToggle } from "@/components/ThemeToggle"
 <ThemeToggle theme={theme} onToggle={toggleTheme} />
 ```
 
-Positioned `fixed bottom-6 right-6 z-50`. Shows current mode label + icon.
+Positioned `fixed top-3 right-3 sm:top-6 sm:right-6 z-50`. Shows current mode label + icon.
 
 ---
 
 ## AsciiArt
 
-Renders ASCII art as a `<pre>` block. Comes with a default diamond pattern, or you can pass custom art.
+Renders ASCII art as a `<pre>` block. Comes with a default "M" logo, or you can pass custom art.
 
 ```jsx
 import { AsciiArt } from "@/components/AsciiArt"
@@ -93,17 +97,18 @@ import { AsciiArt } from "@/components/AsciiArt"
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `children` | `string` | default art | Custom ASCII art string |
+| `children` | `ReactNode` | default art | Content rendered beside the ASCII art |
 | `className` | `string` | — | Additional Tailwind classes |
+
+**Layout:** `flex-col md:flex-row items-start gap-4 md:gap-8`
+- Stacks vertically on mobile, side-by-side on desktop
+- ASCII art `<pre>` is `hidden sm:block` (hidden on very small screens)
 
 **Example:**
 ```jsx
-<AsciiArt />
-<AsciiArt>{`
-  ╔══╗
-  ║  ║
-  ╚══╝
-`}</AsciiArt>
+<AsciiArt>
+  <p>Content beside the M logo</p>
+</AsciiArt>
 ```
 
 ---
@@ -121,6 +126,10 @@ import { NeofetchCard } from "@/components/NeofetchCard"
 | `ascii` | `string[]` | default art | Lines of ASCII art |
 | `info` | `string[]` | — | Lines in `"Key: Value"` format |
 | `className` | `string` | — | Additional Tailwind classes |
+
+**Layout:** `flex-col sm:flex-row gap-4 sm:gap-6`
+- Stacks vertically on mobile, side-by-side on `sm:` and up
+- ASCII art `<pre>` is `hidden sm:block` (hidden on very small screens)
 
 **Example:**
 ```jsx
@@ -249,3 +258,84 @@ $ name: [________________]
 $ email: [_______________]
 $ message: [_____________]
 ```
+
+---
+
+## PixelSnow
+
+Three.js shader-based snow/particle effect. Renders as an `absolute inset-0` overlay. Used globally in `App.jsx` as a site-wide background effect.
+
+```jsx
+import PixelSnow from "@/components/PixelSnow"
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `color` | `string` | `"#ffffff"` | Color of the snowflakes |
+| `flakeSize` | `number` | `0.01` | Size of snowflakes in scene units |
+| `minFlakeSize` | `number` | `1.25` | Minimum flake size in pixels on screen |
+| `pixelResolution` | `number` | `200` | Lower = larger pixels, more retro |
+| `speed` | `number` | `1.25` | Animation speed multiplier |
+| `depthFade` | `number` | `8` | How quickly distant flakes fade |
+| `farPlane` | `number` | `20` | Render distance for flakes |
+| `brightness` | `number` | `1` | Overall brightness |
+| `gamma` | `number` | `0.4545` | Gamma correction |
+| `density` | `number` | `0.3` | Flake probability (0-1) |
+| `variant` | `"square"` \| `"round"` \| `"snowflake"` | `"square"` | Flake shape |
+| `direction` | `number` | `125` | Wind angle (degrees) |
+| `className` | `string` | `""` | Additional CSS classes |
+| `style` | `object` | `{}` | Additional inline styles |
+
+**Usage (global in App.jsx):**
+```jsx
+<div className="relative">
+  <PixelSnow color="#ffffff" density={0.2} speed={0.8} variant="round" />
+  <div className="relative z-10">{/* page content */}</div>
+</div>
+```
+
+**Behavior:**
+- Uses `IntersectionObserver` — pauses when scrolled out of view
+- Debounced resize handler
+- Renders at reduced pixel ratio (max 2x) for performance
+- Transparent background overlaid via `alpha: true`
+
+---
+
+## PixelTransition
+
+Animated pixel-grid hover/click transition between two content states. Uses GSAP for the staggered pixel animation.
+
+```jsx
+import PixelTransition from "@/components/PixelTransition"
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `firstContent` | `ReactNode` | — | Initial content layer |
+| `secondContent` | `ReactNode` | — | Content revealed on hover/click |
+| `gridSize` | `number` | `7` | Number of rows/columns in the pixel grid |
+| `pixelColor` | `string` | `"currentColor"` | Color of the transition pixels |
+| `animationStepDuration` | `number` | `0.3` | Total animation duration in seconds |
+| `once` | `boolean` | `false` | If true, only animates once (no leave transition) |
+| `aspectRatio` | `string` | `"100%"` | CSS `padding-top` value for aspect ratio box |
+| `className` | `string` | `""` | Additional CSS classes |
+| `style` | `object` | `{}` | Additional inline styles |
+
+**Usage:**
+```jsx
+<PixelTransition
+  firstContent={<img src={gif1} alt="" className="w-full h-full object-cover" />}
+  secondContent={<img src={gif2} alt="" className="w-full h-full object-cover" />}
+  gridSize={8}
+  pixelColor="currentColor"
+  animationStepDuration={0.4}
+  aspectRatio="56.25%"
+  className="w-full md:w-lg border border-border overflow-hidden"
+/>
+```
+
+**Behavior:**
+- Desktop: triggers on `mouseenter` / `mouseleave`
+- Touch: toggles on `click`
+- Generates a grid of div pixels that randomly stagger their reveal

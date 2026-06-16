@@ -10,7 +10,7 @@ function ThemeToggle({ theme, onToggle, className }) {
       onClick={onToggle}
       data-slot="theme-toggle"
       className={cn(
-        "fixed bottom-6 right-6 z-50",
+        "fixed top-3 right-3 sm:top-6 sm:right-6 z-50",
         "flex items-center gap-1.5",
         "border border-border bg-background px-3 py-1.5",
         "font-sans text-xs font-medium text-muted-foreground",

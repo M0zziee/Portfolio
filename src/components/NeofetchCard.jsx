@@ -20,8 +20,8 @@ function NeofetchCard({ ascii = defaultAscii, info, className }) {
         className
       )}
     >
-      <div className="flex gap-6">
-        <pre className="leading-relaxed text-primary/60 select-none shrink-0">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+        <pre className="leading-relaxed text-primary/60 select-none shrink-0 hidden sm:block">
           {Array.from({ length: lines }, (_, i) => ascii[i] || "").join("\n")}
         </pre>
         <div className="leading-relaxed text-foreground space-y-0.5">

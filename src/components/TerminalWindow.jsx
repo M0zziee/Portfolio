@@ -20,7 +20,7 @@ function TerminalWindow({ title = "terminal", children, className, statusBar }) 
         </span>
       </div>
 
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         {children}
       </div>
 

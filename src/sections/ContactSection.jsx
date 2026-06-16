@@ -13,7 +13,7 @@ function ContactSection() {
         <TerminalInput label="name" placeholder="your name" />
         <TerminalInput label="email" type="email" placeholder="you@example.com" />
         <TerminalTextarea label="message" placeholder="say something..." />
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap items-center">
           <TerminalOutput prompt="$" className="shrink-0 self-center">
             ./send.sh
           </TerminalOutput>
