@@ -1,5 +1,43 @@
 # Changelog — Layout & Content Changes
 
+## Session 3 — Page Animations + Interactive Fortune + Social Links
+
+### New Dependencies
+| Package | Version | Purpose |
+|---|---|---|
+| `animejs` | ^4.4.1 | Page/section entrance animations, stagger effects, tab transitions |
+
+### New Files Created
+
+| File | Description |
+|---|---|
+| `src/hooks/useAnimateIn.js` | Reusable hook for mount-triggered anime.js entrance animations. Targets elements by CSS selector, supports custom params (translate, opacity, stagger delays, etc.) |
+| `src/components/TerminalShell.jsx` | Interactive mini command-line shell with 6 built-in commands (`fortune`, `whoami`, `date`, `social`, `help`, `clear`). Supports up/down arrow history recall. Uses `quotes` data from portfolio.js |
+| `src/components/SocialLinks.jsx` | Social link list with inline brand SVG icons (GitHub, LinkedIn, X). Hover: scale + color shift + translate animation. Opens links in new tabs |
+
+### Files Modified
+
+| File | Changes |
+|---|---|
+| `src/App.jsx` | Added `contentRef` + `useEffect` that runs `animate()` on `activeTab` change — fades + slides content wrapper up. Wrapped sections in `<div ref={contentRef}>` |
+| `src/data/portfolio.js` | Added `quotes[]` (10 programming/dev quotes with `text`/`author`) and `socialLinks[]` (github, linkedin, x) |
+| `src/sections/HomeSection.jsx` | Added `useAnimateIn` for staggered group entrance (ascii/GIF → neofetch → command line) with inner stagger |
+| `src/sections/AboutSection.jsx` | Added interactive `TerminalShell` (fortune/quotes) and `SocialLinks` below bio text. Added `useAnimateIn` for sequential stagger (cmd → lines → shell → social). Removed `AsciiArtFromImage` and `avatar.png` |
+| `src/sections/SkillsSection.jsx` | Added `useAnimateIn`: categories slide from left, badges pop in with scale stagger |
+| `src/sections/ProjectsSection.jsx` | Added `useAnimateIn`: header + total fade in, project rows slide from right with stagger. Passes `rowIdPrefix="projects-row"` to LsListing |
+| `src/sections/ContactSection.jsx` | Added `useAnimateIn`: command fades in, form fields appear one-by-one, send button pulses in last |
+| `src/components/LsListing.jsx` | Added optional `rowIdPrefix` prop — adds `data-id="{prefix}-{idx}"` to each row div |
+| `vite.config.js` | Fixed `@` path alias from `/src` to `path.resolve(__dirname, "src")` for Windows compatibility |
+
+### Animation Architecture
+
+All animations use `useAnimateIn` hook with `data-id` attribute selectors:
+- Runs once on mount → perfect for tab-based conditional rendering (sections remount on tab change)
+- Uses anime.js v4 named exports: `animate(targets, params)` and `stagger(val, options)`
+- Default animation: opacity `[0,1]` + translateY `[15,0]` + `easeOutQuad` + 500ms
+- Stagger direction: `from: "first"` (top-to-bottom terminal output feel)
+- Cleanup: `instance.pause()` on unmount
+
 ## Session 2 — Responsive Layout + Restructure
 
 ### Tab Bar → Sticky Navbar

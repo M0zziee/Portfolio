@@ -339,3 +339,136 @@ import PixelTransition from "@/components/PixelTransition"
 - Desktop: triggers on `mouseenter` / `mouseleave`
 - Touch: toggles on `click`
 - Generates a grid of div pixels that randomly stagger their reveal
+
+---
+
+## TerminalShell
+
+Interactive mini command-line shell. Users type commands and get terminal-style responses. Built for the About section's fortune/quotes feature but reusable anywhere.
+
+```jsx
+import { TerminalShell } from "@/components/TerminalShell"
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `quotes` | `{ text, author }[]` | — | Array of quote objects used by `fortune` / `quotes` commands |
+| `className` | `string` | — | Additional Tailwind classes |
+
+**Built-in commands:**
+
+| Command | Description |
+|---|---|
+| `fortune` / `quotes` | Displays a random quote from the `quotes` array |
+| `whoami` | Shows user info (name, host, role, location) |
+| `date` | Shows current date and time |
+| `social` | Lists social links inline |
+| `help` | Lists all available commands |
+| `clear` | Clears the terminal history |
+
+**Features:**
+- Command history — press **↑** / **↓** to recall previous commands
+- Scrollable output area (max 48 lines, auto-scrolls to bottom)
+- Auto-focuses input on click anywhere in the shell
+- Returns to initial help message on reset
+
+**Example:**
+```jsx
+<TerminalShell quotes={quotes} />
+```
+
+---
+
+## SocialLinks
+
+Terminal-styled social link list with brand SVG icons and hover animations.
+
+```jsx
+import { SocialLinks } from "@/components/SocialLinks"
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `links` | `{ platform, url }[]` | — | Array of social platform entries |
+| `className` | `string` | — | Additional Tailwind classes |
+
+**Supported platforms:** `github`, `linkedin`, `x` — each has a brand SVG icon built in.
+
+**Hover behavior:**
+- `scale(1.02)` + slight right translate
+- Color shifts to platform brand color (GitHub: white, LinkedIn: `#0a66c2`, X: `#1d9bf0`)
+- Icon, platform name, and URL all transition smoothly via `transition-all duration-200`
+
+**Example:**
+```jsx
+const links = [
+  { platform: "github", url: "https://github.com/mozzy" },
+  { platform: "linkedin", url: "https://linkedin.com/in/mozzy" },
+]
+<SocialLinks links={links} />
+```
+
+---
+
+## LsListing
+
+*See existing documentation above. Added prop:*
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `rowIdPrefix` | `string` | — | If set, each row `<div>` gets `data-id="{prefix}-{index}"` — used by anime.js stagger selectors |
+
+---
+
+## useAnimateIn (Hook)
+
+Custom hook for mount-triggered entrance animations using anime.js.
+
+```jsx
+import { useAnimateIn } from "@/hooks/useAnimateIn"
+```
+
+| Param | Type | Description |
+|---|---|---|
+| `ref` | `React.RefObject` | A `useRef()` attached to the container element |
+| `params` | `object` | Anime.js parameters (targets are resolved from `selector` or the ref element) |
+
+**Key `params` fields:**
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `selector` | `string` | — | CSS selector to pick child elements (e.g., `"[data-id='...']"`). Omitting it animates the ref element itself |
+| `opacity` | `[number, number]` | `[0, 1]` | Fade from/to |
+| `translateY` | `[number, number]` | `[15, 0]` | Slide up from below |
+| `duration` | `number` | `500` | Animation duration in ms |
+| `delay` | `number \| function` | `stagger(60, { start: 100, from: 'first' })` | Delay per element. Pass `stagger(ms, {...})` from animejs |
+| Any anime.js param | — | — | Pass any valid anime.js property (scale, rotate, translateX, easing, etc.) |
+
+**Important:** the hook runs once on mount (entrance animation). It does not re-run if params change. For tab switching animations, sections remount naturally via conditional rendering in `App.jsx`.
+
+**Example:**
+```jsx
+import { useRef } from "react"
+import { useAnimateIn } from "@/hooks/useAnimateIn"
+import { stagger } from "animejs"
+
+function MySection() {
+  const ref = useRef(null)
+
+  useAnimateIn(ref, {
+    selector: ".item",
+    translateY: [20, 0],
+    opacity: [0, 1],
+    duration: 600,
+    delay: stagger(100, { from: "first", start: 200 }),
+  })
+
+  return (
+    <div ref={ref}>
+      <div className="item">One</div>
+      <div className="item">Two</div>
+      <div className="item">Three</div>
+    </div>
+  )
+}
+```

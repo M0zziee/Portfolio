@@ -1,12 +1,17 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-function TerminalWindow({ title = "terminal", children, className, statusBar }) {
+function TerminalWindow({
+  title = "terminal",
+  children,
+  className,
+  statusBar,
+}) {
   return (
     <div
       data-slot="terminal-window"
       className={cn(
         "border border-border bg-background font-sans text-xs",
-        className
+        className,
       )}
     >
       <div className="flex items-center border-b border-border px-3 py-1.5 select-none">
@@ -20,9 +25,7 @@ function TerminalWindow({ title = "terminal", children, className, statusBar }) 
         </span>
       </div>
 
-      <div className="p-3 sm:p-4">
-        {children}
-      </div>
+      <div className="p-3 sm:p-4">{children}</div>
 
       {statusBar && (
         <div className="flex items-center border-t border-border px-3 py-1 text-muted-foreground select-none">
@@ -30,7 +33,7 @@ function TerminalWindow({ title = "terminal", children, className, statusBar }) 
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export { TerminalWindow }
+export { TerminalWindow };

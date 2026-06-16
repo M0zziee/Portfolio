@@ -74,6 +74,25 @@ const projects = [
   },
 ];
 
+const quotes = [
+  { text: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.", author: "Martin Fowler" },
+  { text: "First, solve the problem. Then, write the code.", author: "John Johnson" },
+  { text: "Simplicity is the soul of efficiency.", author: "Austin Freeman" },
+  { text: "Make it work, make it right, make it fast.", author: "Kent Beck" },
+  { text: "The best way to predict the future is to invent it.", author: "Alan Kay" },
+  { text: "Talk is cheap. Show me the code.", author: "Linus Torvalds" },
+  { text: "Programming is not about what you know; it's about what you can figure out.", author: "Chris Pine" },
+  { text: "The only way to learn a new programming language is by writing programs in it.", author: "Dennis Ritchie" },
+  { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein" },
+  { text: "Software is a great combination of artistry and engineering.", author: "Bill Gates" },
+];
+
+const socialLinks = [
+  { platform: "github", url: "https://github.com/mozzy" },
+  { platform: "linkedin", url: "https://linkedin.com/in/mozzy" },
+  { platform: "x", url: "https://x.com/mozzy" },
+];
+
 const aboutLines = [
   "Hi, I'm Mozzy a Full-Stack Developer passionate about building performant, scalable, and Pixelperfect web experiences.",
   "I enjoy turning ideas into products by working across the stack with React, Node.js, and modern web technologies, focusing on clean architecture and thoughtful user experiences.",
@@ -84,4 +103,4 @@ const aboutLines = [
   "open-source projects.",
 ];
 
-export { tabs, neofetchInfo, skills, projects, aboutLines };
+export { tabs, neofetchInfo, skills, projects, aboutLines, quotes, socialLinks };

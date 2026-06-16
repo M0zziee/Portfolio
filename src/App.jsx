@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { TabBar } from "@/components/TabBar"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { useTheme } from "@/hooks/useTheme"
@@ -9,10 +9,21 @@ import { ProjectsSection } from "@/sections/ProjectsSection"
 import { SkillsSection } from "@/sections/SkillsSection"
 import { ContactSection } from "@/sections/ContactSection"
 import PixelSnow from "@/components/PixelSnow"
+import { animate } from "animejs"
 
 function App() {
   const [activeTab, setActiveTab] = useState("home")
   const { theme, toggleTheme } = useTheme()
+  const contentRef = useRef(null)
+
+  useEffect(() => {
+    animate(contentRef.current, {
+      opacity: [0, 1],
+      translateY: [8, 0],
+      easing: "easeOutQuad",
+      duration: 400,
+    })
+  }, [activeTab])
 
   return (
     <div className="min-h-screen bg-background p-3 sm:p-6 space-y-4 relative">
@@ -28,15 +39,17 @@ function App() {
       <div className="relative z-10 space-y-4">
         <TabBar tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
-        {activeTab === "home" && (
-          <>
-            <HomeSection />
-            <AboutSection />
-            <SkillsSection />
-          </>
-        )}
-        {activeTab === "projects" && <ProjectsSection />}
-        {activeTab === "contact" && <ContactSection />}
+        <div ref={contentRef} className="space-y-4">
+          {activeTab === "home" && (
+            <>
+              <HomeSection />
+              <AboutSection />
+              <SkillsSection />
+            </>
+          )}
+          {activeTab === "projects" && <ProjectsSection />}
+          {activeTab === "contact" && <ContactSection />}
+        </div>
 
         <ThemeToggle theme={theme} onToggle={toggleTheme} />
       </div>

@@ -28,7 +28,7 @@ function Perms({ perms, className }) {
   )
 }
 
-function LsListing({ items = [], className, showTotal = true }) {
+function LsListing({ items = [], className, showTotal = true, rowIdPrefix }) {
   return (
     <div className={cn("font-sans text-xs leading-relaxed", className)}>
       {showTotal && (
@@ -53,6 +53,7 @@ function LsListing({ items = [], className, showTotal = true }) {
           {items.map((item, idx) => (
             <div
               key={idx}
+              data-id={rowIdPrefix ? `${rowIdPrefix}-${idx}` : undefined}
               className="flex gap-2 hover:bg-muted/30 px-0.5 -mx-0.5"
             >
               <Perms perms={item.perms} className="w-[34px] shrink-0" />

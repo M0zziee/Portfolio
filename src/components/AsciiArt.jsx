@@ -1,13 +1,7 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const art = String.raw`
-███╗   ███╗
-████╗ ████║
-██╔████╔██║
-██║╚██╔╝██║
-██║ ╚═╝ ██║
-╚═╝     ╚═╝
-`
+`;
 
 function AsciiArt({ children, className }) {
   if (children) {
@@ -16,7 +10,7 @@ function AsciiArt({ children, className }) {
         <pre
           className={cn(
             "font-sans text-xs leading-tight text-primary/60 select-none shrink-0 hidden sm:block",
-            className
+            className,
           )}
         >
           {art}
@@ -25,19 +19,19 @@ function AsciiArt({ children, className }) {
           {children}
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <pre
       className={cn(
         "font-sans text-xs leading-tight text-primary/60 select-none",
-        className
+        className,
       )}
     >
       {art}
     </pre>
-  )
+  );
 }
 
-export { AsciiArt }
+export { AsciiArt };

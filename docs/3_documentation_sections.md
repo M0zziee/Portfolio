@@ -7,7 +7,7 @@ The portfolio is a **single-page layout** with tab-based navigation. Sections ar
 | File | Tab | Description |
 |---|---|---|
 | `HomeSection.jsx` | home | ASCII art logo, GIF with PixelTransition, neofetch card, typewriter welcome |
-| `AboutSection.jsx` | home | `cat about.md` styled bio — rendered below HomeSection |
+| `AboutSection.jsx` | home | `cat about.md` styled bio + interactive fortune shell + social links — rendered below HomeSection |
 | `SkillsSection.jsx` | home | Skills grouped by category with badges — rendered below AboutSection |
 | `ProjectsSection.jsx` | projects | `ls -la` listing of portfolio projects |
 | `ContactSection.jsx` | contact | Terminal-styled contact form (`mail --send`) |
@@ -66,6 +66,25 @@ Permission prefix colors:
 const aboutLines = ["line 1", "", "line 3", ...]
 ```
 Lines of text rendered in the about section. Empty strings create blank lines.
+
+### `quotes`
+```js
+const quotes = [
+  { text: "Quote text here", author: "Author Name" },
+  ...
+]
+```
+Array of quote objects used by the `fortune` / `quotes` command in the interactive terminal shell. Add or remove entries to change the quote pool.
+
+### `socialLinks`
+```js
+const socialLinks = [
+  { platform: "github", url: "https://github.com/mozzy" },
+  { platform: "linkedin", url: "https://linkedin.com/in/mozzy" },
+  ...
+]
+```
+Array of social platform objects rendered by the `SocialLinks` component. Supported platforms: `github`, `linkedin`, `x`. Each platform maps to an inline SVG brand icon.
 
 ## How to Add a New Tab
 

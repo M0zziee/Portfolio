@@ -16,6 +16,7 @@ Terminal TUI-themed portfolio built with React + Vite + Tailwind CSS v4 + shadcn
 | clsx + tailwind-merge | — | Class merging (via `cn()` helper) |
 | three | — | 3D WebGL rendering — powers PixelSnow effect |
 | GSAP | 3.15 | Animation library — drives PixelTransition pixel grid |
+| animejs | 4.4 | Animation library — entrance animations, stagger effects, tab transitions |
 
 ## Quick Start
 
@@ -65,7 +66,8 @@ src/
 ├── data/
 │   └── portfolio.js         ← All portfolio data (projects, skills, etc.)
 ├── hooks/
-│   └── useTheme.js          ← Dark/light mode hook
+│   ├── useTheme.js          ← Dark/light mode hook
+│   └── useAnimateIn.js      ← anime.js mount/entrance animation hook
 ├── components/
 │   ├── ui/                  ← shadcn/ui primitives (generated)
 │   ├── TerminalWindow.jsx
@@ -79,7 +81,9 @@ src/
 │   ├── TerminalInput.jsx
 │   ├── PixelTransition.jsx
 │   ├── PixelTransition.css
-│   └── PixelSnow.jsx
+│   ├── PixelSnow.jsx
+│   ├── TerminalShell.jsx    ← Interactive mini-shell with fortune/quotes
+│   └── SocialLinks.jsx      ← Brand-icon social links with hover animation
 └── sections/
     ├── HomeSection.jsx
     ├── AboutSection.jsx
@@ -87,6 +91,19 @@ src/
     ├── SkillsSection.jsx
     └── ContactSection.jsx
 ```
+
+## Page Animations (anime.js)
+
+All sections use the `useAnimateIn` hook for mount-triggered entrance animations:
+
+- **Tab switch**: outer content wrapper fades + slides up via `animate()` in `App.jsx`
+- **Home**: three staggered groups (ascii/GIF → neofetch → command line) with inner stagger
+- **About**: command → text lines → terminal shell → social links, sequential top-to-bottom stagger
+- **Skills**: categories slide from left, badges pop in with scale stagger
+- **Projects**: header → total → rows, with rows sliding from right
+- **Contact**: command → fields (one-by-one) → send button pulses in last
+
+All animations respect the terminal "printed output" feel — elements emerge from below with staggered delays.
 
 ## Terminal Aesthetic
 
