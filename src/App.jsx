@@ -47,7 +47,7 @@ function App() {
               <SkillsSection />
             </>
           )}
-          {activeTab === "projects" && <ProjectsSection />}
+          {activeTab === "resume" && <ProjectsSection />}
           {activeTab === "contact" && <ContactSection />}
         </div>
 

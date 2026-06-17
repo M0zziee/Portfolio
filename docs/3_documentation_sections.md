@@ -8,11 +8,13 @@ The portfolio is a **single-page layout** with tab-based navigation. Sections ar
 |---|---|---|
 | `HomeSection.jsx` | home | ASCII art logo, GIF with PixelTransition, neofetch card, typewriter welcome |
 | `AboutSection.jsx` | home | `cat about.md` styled bio + interactive fortune shell + social links — rendered below HomeSection |
-| `SkillsSection.jsx` | home | Skills grouped by category with badges — rendered below AboutSection |
-| `ProjectsSection.jsx` | projects | `ls -la` listing of portfolio projects |
+| `SkillsSection.jsx` | home | Skills grouped by category with badges + tech logo carousel + interactive skill detail panel — rendered below AboutSection |
+| `ProjectsSection.jsx` | resume | Three stacked terminal windows: Academic cards (`~/academic`) → Masonry project grid (`~/projects`) → Certification cards (`~/certifications`) |
 | `ContactSection.jsx` | contact | Terminal-styled contact form (`mail --send`) |
 
 > **Note:** The **home** tab renders three sections stacked: `HomeSection` → `AboutSection` → `SkillsSection`. This was done to consolidate the landing page while keeping each section as a self-contained component.
+>
+> The **resume** tab replaces the old `projects` tab and shows a richer layout with education history, project cards in a masonry grid, and certification cards.
 
 ## Data Model
 
@@ -20,7 +22,7 @@ All portfolio data is defined in `src/data/portfolio.js`.
 
 ### `tabs`
 ```js
-const tabs = ["home", "projects", "contact"]
+const tabs = ["home", "resume", "contact"]
 ```
 Controls the TabBar labels and the `activeTab` state in `App.jsx`.
 
@@ -43,23 +45,25 @@ Object where each key is a category name rendered as `[category]` and the array 
 ```js
 const projects = [
   {
-    perms: "drwxr-xr-x",   // file permissions string
-    links: 3,               // hard link count
-    owner: "mozzy",         // file owner
-    group: "dev",           // file group
-    size: 4096,             // bytes (auto-formatted as B/K/M)
-    date: "2026-06-15T14:30:00", // ISO date
-    name: "project-name",   // displayed name
+    id: 0,                          // unique ID for masonry keys & gradient selection
+    name: "ecommerce-platform",     // project name
+    description: "Full-stack...",   // description shown on hover in ProjectCard
+    tech: ["React", "Node.js", "PostgreSQL"], // tech icons displayed in card
+    github: "https://github.com/...",  // GitHub link
+    demo: null,                        // optional demo link
+    status: "active",                  // "active" | "wip" | "archived" → dot color
+    height: 320,                       // masonry cell height in px
+    image: "Caffeinance.png",          // optional — triggers photo card mode
   },
   ...
 ]
 ```
-Each object maps to one row in the `ls -la` table.
+Each object maps to one card in the Masonry grid within the **resume** tab. `status` controls the colored indicator dot:
+- `"active"` → green
+- `"wip"` → yellow
+- `"archived"` → muted
 
-Permission prefix colors:
-- `d` → blue (directory)
-- `l` → cyan (symlink)
-- `x` → green (executable)
+**Photo card mode:** add an `image: "filename.png"` field. The `ProjectsSection` looks up the filename in its `projectImages` map, resolves it to the imported URL, and passes it as `img` to `ProjectCard`. The card renders the image full-bleed with a dark hover overlay showing description, status, and links. To add a new photo, import the file in `ProjectsSection.jsx` and add an entry to the `projectImages` object.
 
 ### `aboutLines`
 ```js
@@ -85,6 +89,57 @@ const socialLinks = [
 ]
 ```
 Array of social platform objects rendered by the `SocialLinks` component. Supported platforms: `github`, `linkedin`, `x`. Each platform maps to an inline SVG brand icon.
+
+### `skillDetail`
+```js
+const skillDetail = {
+  React: { description: "UI framework for building component-based interfaces", category: "frontend" },
+  "Node.js": { description: "JavaScript runtime for server-side applications", category: "backend" },
+  ...
+}
+```
+Object keyed by skill name (matching keys in `skills`). Used by `SkillsSection` to show a detail panel when a skill badge is clicked. Each entry has:
+- `description` — plain-text explanation of the skill
+- `category` — logical group (matches the category keys in `skills`)
+
+### `academic`
+```js
+const academic = [
+  {
+    institution: "Universitas Garut",
+    degree: "Bachelor of Computer Science",
+    period: "2022 - 2026",
+    description: "Focused on software engineering...",
+    achievements: ["GPA: 3.8/4.0", "Thesis on web performance optimization"],
+  },
+  ...
+]
+```
+Array of education entries rendered as `AcademicCard` components in the resume tab's `~/academic` terminal window. Each entry supports optional `achievements[]` displayed as tags.
+
+### `certifications`
+```js
+const certifications = [
+  {
+    name: "AWS Certified Cloud Practitioner",
+    issuer: "Amazon Web Services",
+    date: "Dec 2024",
+    description: "Foundational understanding...",
+    credentialUrl: "#",
+  },
+  ...
+]
+```
+Array of certification entries rendered as `CertCard` components in the resume tab's `~/certifications` terminal window. If `credentialUrl` is not `"#"`, a "Verify" link is shown.
+
+### `portfolioTech`
+```js
+const portfolioTech = [
+  { name: "React", icon: "SiReact", description: "UI framework...", href: "https://react.dev" },
+  ...
+]
+```
+Array of technologies used to build this portfolio. Drives the `LogoLoop` carousel in `SkillsSection`. Each entry maps to a Simple Icon component via `iconMap` in `SkillsSection.jsx`. The `icon` field must match a key in the icon map (e.g., `SiReact`, `SiVite`, `SiTailwindcss`).
 
 ## How to Add a New Tab
 
@@ -122,7 +177,15 @@ That's it — the TabBar picks up `tabs` automatically and the section renders w
 
 ## How to Modify Projects
 
-Edit the `projects` array in `src/data/portfolio.js`. Add, remove, or reorder entries. The `LsListing` component renders them in order. Set `perms` to control color and type indicators.
+Edit the `projects` array in `src/data/portfolio.js`. Add, remove, or reorder entries. Each entry needs `id` (unique), `name`, `description`, `tech[]`, `github`, `height`. The `Masonry` + `ProjectCard` components render them in the **resume** tab's `~/projects` window. Set `status` to control the indicator dot color.
+
+## How to Modify Academic / Certifications
+
+Edit the `academic` or `certifications` arrays in `src/data/portfolio.js`. Add new objects following the shape above. Each entry is rendered as an `AcademicCard` or `CertCard` in the **resume** tab.
+
+## How to Modify Skill Details
+
+Edit the `skillDetail` object in `src/data/portfolio.js`. Add a key matching a skill name from the `skills` object, with `description` and `category` fields. The detail panel in `SkillsSection` displays this info when the badge is clicked.
 
 ## How to Modify Skills
 

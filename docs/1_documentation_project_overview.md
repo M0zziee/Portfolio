@@ -15,8 +15,9 @@ Terminal TUI-themed portfolio built with React + Vite + Tailwind CSS v4 + shadcn
 | class-variance-authority | — | Component variant management |
 | clsx + tailwind-merge | — | Class merging (via `cn()` helper) |
 | three | — | 3D WebGL rendering — powers PixelSnow effect |
-| GSAP | 3.15 | Animation library — drives PixelTransition pixel grid |
+| GSAP | 3.15 | Animation library — drives PixelTransition pixel grid, Masonry entrance |
 | animejs | 4.4 | Animation library — entrance animations, stagger effects, tab transitions |
+| react-icons | 5.6 | Simple Icons SVG set — powers tech stack logos in SkillsSection & ProjectCard |
 
 ## Quick Start
 
@@ -69,7 +70,9 @@ src/
 │   ├── useTheme.js          ← Dark/light mode hook
 │   └── useAnimateIn.js      ← anime.js mount/entrance animation hook
 ├── components/
-│   ├── ui/                  ← shadcn/ui primitives (generated)
+│   ├── ui/                  ← shadcn/ui primitives + custom wrappers
+│   │   ├── button.jsx, badge.jsx, input.jsx, label.jsx, ...
+│   │   └── tooltip.jsx      ← Radix UI Tooltip wrapper (added for SkillSection tooltips)
 │   ├── TerminalWindow.jsx
 │   ├── TabBar.jsx
 │   ├── ThemeToggle.jsx
@@ -83,7 +86,12 @@ src/
 │   ├── PixelTransition.css
 │   ├── PixelSnow.jsx
 │   ├── TerminalShell.jsx    ← Interactive mini-shell with fortune/quotes
-│   └── SocialLinks.jsx      ← Brand-icon social links with hover animation
+│   ├── SocialLinks.jsx      ← Brand-icon social links with hover animation
+│   ├── Masonry.jsx          ← GSAP-powered masonry grid for project cards
+│   ├── ProjectCard.jsx      ← Rich project card with tech icons + status
+│   ├── AcademicCard.jsx     ← Education card with achievement tags
+│   ├── CertCard.jsx         ← Certification card with verify link
+│   └── LogoLoop.jsx         ← Infinite auto-scrolling logo carousel
 └── sections/
     ├── HomeSection.jsx
     ├── AboutSection.jsx
@@ -102,6 +110,7 @@ All sections use the `useAnimateIn` hook for mount-triggered entrance animations
 - **Skills**: categories slide from left, badges pop in with scale stagger
 - **Projects**: header → total → rows, with rows sliding from right
 - **Contact**: command → fields (one-by-one) → send button pulses in last
+- **Resume**: four staggered groups (cmd → academic → projects → certifications) with GSAP-based Masonry entrance (items animate from configurable direction)
 
 All animations respect the terminal "printed output" feel — elements emerge from below with staggered delays.
 
@@ -124,3 +133,4 @@ All animations respect the terminal "printed output" feel — elements emerge fr
 - **Text sizing:** headings scale down on mobile (`text-2xl md:text-3xl`)
 - **Padding:** outer/inner padding reduces on mobile (`p-3 sm:p-6`, `p-3 sm:p-4`)
 - **ASCII art:** hidden on screens narrower than `sm:` breakpoint
+- **Masonry grid:** responsive column count (1–5 columns based on viewport width), recalculates on resize via `ResizeObserver`

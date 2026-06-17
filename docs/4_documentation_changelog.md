@@ -1,5 +1,102 @@
 # Changelog — Layout & Content Changes
 
+## Session 7 — Masonry Container Auto-Height
+
+### Files Modified
+
+| File | Changes |
+|---|---|
+| `src/components/Masonry.jsx` | Replaced `minHeight: 400` with dynamic `height` computed from the tallest column (`Math.max(...colHeights, 400)`). The `useMemo` now returns `{ items, height }` — container always matches content height, preventing overflow on mobile or with many items |
+| `docs/2_documentation_components.md` | Updated Masonry behavior to note automatic container height |
+
+### The Problem
+
+All masonry items are `position: absolute`, so they don't contribute to the container's natural height. The fixed `minHeight: 400` caused items to overflow on mobile (1 column — all items stack vertically) or when many items were added. Cards appeared "stepped out of frame" below the container.
+
+### The Fix
+
+The `useMemo` that computes item positions now also tracks the tallest column's total height (`colHeights`). The result `{ items, height }` is used to set an explicit `height` on the container, making it always match the content regardless of device width or item count.
+
+## Session 6 — Photo Card Mode for ProjectCard
+
+### Files Modified
+
+| File | Changes |
+|---|---|---|
+| `src/data/portfolio.js` | Replaced `isPhoto` boolean with `image: "Caffeinance.png"` string field. Restored 4 normal project entries (ecommerce-platform, cli-toolkit, api-gateway, design-system) alongside the photo card. Only the entry with an `image` field renders as a photo card |
+| `src/sections/ProjectsSection.jsx` | Added `projectImages` map (`{ "Caffeinance.png": caffeinanceImg }`). Masonry item mapping now resolves `img` via `p.image ? projectImages[p.image] : null` — supports multiple photo cards |
+| `src/components/ProjectCard.jsx` | Added **photo card mode** — when `item.img` exists, renders the image full-bleed with terminal title bar and a dark gradient overlay on hover. Overlay shows `$ Description:`, `$ Status:`, `$ Links:` (GitHub + Demo) with the same animejs fade+slide animation as default mode. Hooks (`detailsRef`, `isHovered`, `animRef`, `useEffect`) moved before the `if (item.img)` check so they're shared between both modes |
+| `docs/5_modification_guide.md` | Updated photo card section: replaced `isPhoto: true` with `image: "filename.png"` field + `projectImages` map approach |
+| `docs/2_documentation_components.md` | Updated `ProjectCard` docs: replaced `isPhoto`/`img` fields with single `img` field, clarified resolution via `projectImages` map |
+| `docs/3_documentation_sections.md` | Updated `projects` data model: replaced `isPhoto` with `image` field, explained `projectImages` lookup |
+
+### Photo Card Hover Overlay
+
+- Uses the same `useEffect` + `animRef` animation pattern as the default card (`animejs`): opacity `[0,1]` + translateY `[8,0]`, 350ms enter / 250ms leave, `easeOutQuad`
+- Dark gradient: `bg-gradient-to-t from-black/85 via-black/60 to-transparent`
+- Text styled in white variants (`text-white/80`, `text-white/50`, `text-white/70`) for readability against dark overlay
+- Links are clickable (`pointer-events` removed from overlay)
+
+### How to Add More Photo Cards
+
+1. Add the image file to `src/assets/`
+2. Import it in `src/sections/ProjectsSection.jsx` and add an entry to `projectImages`
+3. Set `image: "filename.png"` on the project entry in `src/data/portfolio.js`
+
+## Session 5 — ProjectCard Terminal Window Refactor
+
+### Files Modified
+
+| File | Changes |
+|---|---|
+| `src/components/ProjectCard.jsx` | Full rewrite: replaced modern card (rounded corners, gradients, overlay) with terminal-window shell matching `TerminalWindow`. Default state: compact placeholder (`$ ls -la` / `$ nothing to show`). Hover state: details animate in via `anime.js` — `opacity [0,1]` + `translateY [8,0]`, 350ms enter / 250ms leave, `easeOutQuad`. Details include Description, Tech icons + names, Status with colored dot, GitHub/demo links. Animation properly cancels on rapid enter/leave via `animRef` |
+| `src/sections/ProjectsSection.jsx` | Masonry props: `scaleOnHover={false}`, `blurToFocus={false}` — hover behavior now handled entirely inside `ProjectCard` |
+| `src/data/portfolio.js` | Adjusted `height` values for all 6 projects (360–420, previously 200–360) to accommodate terminal card hover content |
+
+### Animation Detail
+
+- Uses `animate()` from `animejs` directly in a `useEffect` driven by `isHovered` state
+- `animRef` stores the active animation instance; paused on re-trigger to prevent overlap
+- Cleanup via `return () => animRef.current?.pause()` on unmount
+
+## Session 4 — Resume Tab + Project Cards + Skill Details + Tech Carousel
+
+### New Dependencies
+| Package | Version | Purpose |
+|---|---|---|
+| `react-icons` | ^5.6.0 | Simple Icons SVG set for tech stack logos (SiReact, SiNodedotjs, etc.) |
+
+### New Files Created
+
+| File | Description |
+|---|---|
+| `src/components/Masonry.jsx` | GSAP-powered masonry grid layout with responsive column count, entrance animations (configurable direction), hover scale effect, blur-to-focus transition |
+| `src/components/ProjectCard.jsx` | Rich project card with gradient background, tech icons row, status indicator dot, description + GitHub/demo links on hover |
+| `src/components/AcademicCard.jsx` | Education card with GraduationCap icon, institution details, achievement tags |
+| `src/components/CertCard.jsx` | Certification card with Award icon, issuer, date, description, optional Verify link |
+| `src/components/LogoLoop.jsx` | Infinite auto-scrolling logo carousel with smooth easing, direction control, fade-out edges, hover pause/speed, responsive copy duplication |
+| `src/components/ui/tooltip.jsx` | Radix UI Tooltip primitive wrapper with shadcn-style styling |
+
+### Files Modified
+
+| File | Changes |
+|---|---|
+| `index.html` | Page title changed from `"website"` to `"Mozzy Portfolio"` |
+| `package.json` | Added `react-icons` dependency |
+| `src/App.css` | Deleted (was empty) |
+| `src/App.jsx` | Tab key `"projects"` → `"resume"` |
+| `src/data/portfolio.js` | `tabs`: `"projects"` → `"resume"`. `projects[]` restructured from `ls -la` format to rich objects (`id`, `name`, `description`, `tech[]`, `github`, `demo`, `status`, `height`). Added `skillDetail{}`, `academic[]`, `certifications[]`, `portfolioTech[]`. Updated exports |
+| `src/sections/ProjectsSection.jsx` | Completely reworked: replaced `ls -la` table with 3 stacked terminal windows — Academic cards (`~/academic`) → Masonry project grid (`~/projects`) → Certification cards (`~/certifications`). Animated with staggered GSAP entrance per section |
+| `src/sections/SkillsSection.jsx` | Added tech logo carousel (`LogoLoop`) with tooltips wrapping portfolio tech icons. Skill badges now clickable (toggle selection) → detail panel shows description + category from `skillDetail`. Added `react-icons/si` icon map. Detail panel animated via `animejs` |
+
+### Data Model Changes
+
+- **`projects[]`** — Each entry changed from flat `{ perms, links, owner, group, size, date, name }` to rich `{ id, name, description, tech[], github, demo, status, height }`
+- **`skillDetail{}`** — New object keyed by skill name with `{ description, category }` — powers the skill detail panel
+- **`academic[]`** — New array with `{ institution, degree, period, description, achievements[] }`
+- **`certifications[]`** — New array with `{ name, issuer, date, description, credentialUrl }`
+- **`portfolioTech[]`** — New array with `{ name, icon, description, href }` — drives the LogoLoop carousel in SkillsSection
+
 ## Session 3 — Page Animations + Interactive Fortune + Social Links
 
 ### New Dependencies

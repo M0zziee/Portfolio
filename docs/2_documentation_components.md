@@ -420,6 +420,252 @@ const links = [
 
 ---
 
+## Masonry
+
+GSAP-powered masonry grid with entrance animations, responsive column count, and hover effects.
+
+```jsx
+import Masonry from "@/components/Masonry"
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `items` | `object[]` | — | Array of items — each needs `id`, `height`, and optional `url` |
+| `renderItem` | `(item) => ReactNode` | — | Custom render function per item |
+| `ease` | `string` | `"power3.out"` | GSAP easing function |
+| `duration` | `number` | `0.6` | Animation duration in seconds |
+| `stagger` | `number` | `0.05` | Stagger delay between items in seconds |
+| `animateFrom` | `string` | `"bottom"` | Entrance direction: `"top"`, `"bottom"`, `"left"`, `"right"`, `"center"`, `"random"` |
+| `scaleOnHover` | `boolean` | `true` | Whether items scale down on hover |
+| `hoverScale` | `number` | `0.95` | Scale factor on hover |
+| `blurToFocus` | `boolean` | `true` | Items start blurred then clear on entrance |
+| `colorShiftOnHover` | `boolean` | `false` | Color overlay on hover (expects `.color-overlay` in children) |
+
+**Behavior:**
+- Responsive columns: 5 (≥1500px), 4 (≥1000px), 3 (≥600px), 2 (≥400px), 1 (default)
+- Items positioned absolutely via `useMemo` — recalculates on resize
+- Container height automatically matches the tallest column — all content stays in frame on any device
+- Entrance: GSAP `fromTo` from offscreen/direction to final position
+- Re-layout: GSAP `.to()` on subsequent renders (for responsive column changes)
+- Hover: GSAP scale animation with `power2.out` easing
+
+**Example:**
+```jsx
+<Masonry
+  items={projects}
+  renderItem={(item) => <ProjectCard item={item} />}
+  animateFrom="bottom"
+  stagger={0.05}
+  scaleOnHover={false}
+  blurToFocus={false}
+/>
+```
+
+---
+
+## ProjectCard
+
+Terminal-window-styled project card designed for use inside `Masonry`. Supports two modes:
+
+- **Default mode:** shows a compact terminal placeholder (`$ ls -la` / `$ nothing to show`) and reveals full project details on hover with an anime.js entrance animation
+- **Photo card mode:** when `item.img` is set, renders a full-bleed image with the terminal title bar and a dark gradient overlay that reveals Description, Status, and GitHub/Demo links on hover
+
+```jsx
+import ProjectCard from "@/components/ProjectCard"
+```
+
+| Prop | Type | Description |
+|---|---|---|
+| `item` | `object` | Project object with `id`, `name`, `description`, `tech[]`, `status`, `github`, `demo`; optional `img` |
+
+**Fields used from `item`:**
+
+| Field | Description |
+|---|---|
+| `id` | Identifier key (unused visually) |
+| `name` | Project name shown in the terminal title bar |
+| `description` | Shown in hover details as `$ Description:` line |
+| `tech` | Array of tech names — mapped to Simple Icons (React, Node.js, PostgreSQL, Go, Tailwind CSS, Next.js, Redis, Docker, TypeScript, JavaScript) |
+| `status` | Controls title bar dot color: `"active"` → green, `"wip"` → yellow, `"archived"` → muted |
+| `github` | GitHub link shown in `$ Links:` line |
+| `demo` | Demo link shown in `$ Links:` line |
+| `img` | (Optional) Image URL (set by `ProjectsSection` from `projectImages` map). If present, the card switches to **photo card mode** and renders the image full-bleed instead of terminal text |
+
+### Default Mode Layout
+
+```
+┌── ● ● ● ── ecommerce-platform ─────── ● ─┐
+│                                             │
+│  $ ls -la                                   │
+│  $ nothing to show                          │
+│                                             │
+│  ┌─── hover reveals ───────────────────┐   │
+│  │  $ cat README.md                     │   │
+│  │  $ Description: Full-stack e-com... │   │
+│  │  $ Tech:    [R][N][P]  React, ...   │   │
+│  │  $ Status:  ● active                 │   │
+│  │  $ Links:   github  demo             │   │
+│  └──────────────────────────────────────┘   │
+└─────────────────────────────────────────────┘
+```
+
+### Photo Card Mode Layout
+
+```
+┌── ● ● ● ── caffeinance ────────────── ● ─┐
+│                                             │
+│  ┌─────────────────────────────────┐       │
+│  │                                 │       │
+│  │         [IMAGE]                 │       │
+│  │                                 │       │
+│  │  ┌── hover overlay ────────┐   │       │
+│  │  │  $ Description: ...     │   │       │
+│  │  │  $ Status:  ● active    │   │       │
+│  │  │  $ Links:   github demo │   │       │
+│  │  └─────────────────────────┘   │       │
+│  └─────────────────────────────────┘       │
+└─────────────────────────────────────────────┘
+```
+
+**Behavior (default mode):**
+- Outer shell matches `TerminalWindow` exactly: `border border-border bg-background font-sans text-xs` with title bar (● ● ● dots + project name) and right-aligned status dot
+- **Default state:** placeholder shows `$ ls -la` + `$ nothing to show` in centered content area
+- **Hover enter:** details container animates via `anime.js` — `opacity [0,1]` + `translateY [8,0]`, 350ms, `easeOutQuad`
+- **Hover leave:** reverse animation — `opacity [1,0]` + `translateY [0,8]`, 250ms, `easeOutQuad`
+- Previous animation is paused on rapid enter/leave via `animRef`
+- Placeholder fades to `opacity-15` during hover via CSS transition
+- Links (GitHub, demo) are always clickable with `e.stopPropagation()`
+
+**Behavior (photo card mode):**
+- Same terminal title bar with traffic-light dots, project name, and status dot
+- Image fills the card body via `object-cover`
+- On hover, a dark gradient overlay (`from-black/85 via-black/60 to-transparent`) slides up and fades in (same animejs animation as default mode) showing Description, Status, and clickable GitHub/Demo links
+- `pointer-events-none` is omitted so links in the overlay are clickable
+
+---
+
+## AcademicCard
+
+Education card with gradient icon, institution details, and achievement tags.
+
+```jsx
+import AcademicCard from "@/components/AcademicCard"
+```
+
+| Prop | Type | Description |
+|---|---|---|
+| `item` | `object` | Academic entry with `institution`, `degree`, `period`, `description`, `achievements[]` |
+| `index` | `number` | Index for gradient cycling |
+
+**Example:**
+```jsx
+<AcademicCard item={academic[0]} index={0} />
+```
+
+---
+
+## CertCard
+
+Certification card with award icon, issuer info, and optional verify link.
+
+```jsx
+import CertCard from "@/components/CertCard"
+```
+
+| Prop | Type | Description |
+|---|---|---|
+| `item` | `object` | Cert entry with `name`, `issuer`, `date`, `description`, `credentialUrl` |
+| `index` | `number` | Index for gradient cycling |
+
+**Example:**
+```jsx
+<CertCard item={certifications[0]} index={0} />
+```
+
+---
+
+## LogoLoop
+
+Infinite auto-scrolling logo carousel with smooth easing, responsive behavior, and accessible markup.
+
+```jsx
+import { LogoLoop } from "@/components/LogoLoop"
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `logos` | `object[]` | — | Array of logo items — supports `{ node, title, href }` (React nodes) or `{ src, alt, href }` (images) |
+| `speed` | `number` | `120` | Scroll speed in px/s |
+| `direction` | `string` | `"left"` | `"left"`, `"right"`, `"up"`, `"down"` |
+| `width` | `string` | `"100%"` | Container width |
+| `logoHeight` | `number` | `28` | Logo height in px |
+| `gap` | `number` | `32` | Gap between logos in px |
+| `pauseOnHover` | `boolean` | — | Pause scrolling on hover (sets hover speed to 0) |
+| `hoverSpeed` | `number` | — | Custom speed on hover (overrides pauseOnHover) |
+| `fadeOut` | `boolean` | `false` | Show fade-to-background edges |
+| `scaleOnHover` | `boolean` | `false` | Scale up individual logos on hover |
+| `renderItem` | `(item, key) => ReactNode` | — | Custom render function for each logo |
+| `ariaLabel` | `string` | `"Partner logos"` | ARIA label for the region |
+| `className` | `string` | — | Additional Tailwind classes |
+
+**Behavior:**
+- Uses `requestAnimationFrame` loop with smooth velocity easing
+- Automatically duplicates logos to fill visible area
+- Respects `prefers-reduced-motion`
+- Fade edges use CSS gradients matching the background color (auto-detects dark/light)
+- Responsive: recalculates copy count on resize
+
+**Example:**
+```jsx
+<LogoLoop
+  logos={techLogos}
+  speed={60}
+  direction="left"
+  logoHeight={32}
+  gap={48}
+  fadeOut
+  renderItem={(item) => (
+    <Tooltip>
+      <TooltipTrigger><span>{item.node}</span></TooltipTrigger>
+      <TooltipContent><span>{item.title}</span></TooltipContent>
+    </Tooltip>
+  )}
+/>
+```
+
+---
+
+## Tooltip (ui/tooltip)
+
+Radix UI Tooltip primitive wrapper with shadcn-style styling.
+
+```jsx
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
+```
+
+**Components exported:**
+
+| Component | Description |
+|---|---|
+| `TooltipProvider` | Wraps tooltip group — sets `delayDuration` (default `0`) |
+| `Tooltip` | Radix `Tooltip.Root` — controls open state |
+| `TooltipTrigger` | Radix `Tooltip.Trigger` — `asChild` by default |
+| `TooltipContent` | Styled tooltip popover with border, shadow, animation classes |
+
+**Example:**
+```jsx
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <button>Hover me</button>
+    </TooltipTrigger>
+    <TooltipContent side="top">Tooltip text</TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+---
+
 ## useAnimateIn (Hook)
 
 Custom hook for mount-triggered entrance animations using anime.js.

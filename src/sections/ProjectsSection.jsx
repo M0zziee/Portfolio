@@ -1,55 +1,110 @@
 import { useRef } from "react"
 import { TerminalWindow } from "@/components/TerminalWindow"
 import { TerminalOutput } from "@/components/TerminalOutput"
-import { LsListing } from "@/components/LsListing"
+import Masonry from "@/components/Masonry"
+import ProjectCard from "@/components/ProjectCard"
+import AcademicCard from "@/components/AcademicCard"
+import CertCard from "@/components/CertCard"
 import { useAnimateIn } from "@/hooks/useAnimateIn"
-import { projects } from "@/data/portfolio"
-import { stagger } from "animejs"
+import { projects, academic, certifications } from "@/data/portfolio"
+import caffeinanceImg from "@/assets/Caffeinance.png"
+
+const projectImages = {
+  "Caffeinance.png": caffeinanceImg,
+}
+
+const masonryItems = projects.map((p) => ({
+  id: p.id,
+  url: p.github,
+  height: p.height,
+  name: p.name,
+  description: p.description,
+  tech: p.tech,
+  status: p.status,
+  github: p.github,
+  demo: p.demo,
+  img: p.image ? projectImages[p.image] : null,
+}))
 
 function ProjectsSection() {
   const sectionRef = useRef(null)
 
   useAnimateIn(sectionRef, {
-    selector: "[data-id='projects-cmd'], [data-id='projects-total']",
+    selector: "[data-id='resume-cmd']",
     translateY: [15, 0],
     duration: 500,
-    delay: stagger(100, { from: "first" }),
+    delay: 100,
   })
 
   useAnimateIn(sectionRef, {
-    selector: "[data-id='projects-row']",
-    translateX: [30, 0],
+    selector: "[data-id='resume-academic']",
+    translateY: [20, 0],
     opacity: [0, 1],
-    duration: 500,
-    delay: stagger(80, { from: "first", start: 300 }),
+    duration: 600,
+    delay: 200,
+  })
+
+  useAnimateIn(sectionRef, {
+    selector: "[data-id='resume-projects']",
+    translateY: [20, 0],
+    opacity: [0, 1],
+    duration: 600,
+    delay: 400,
+  })
+
+  useAnimateIn(sectionRef, {
+    selector: "[data-id='resume-certifications']",
+    translateY: [20, 0],
+    opacity: [0, 1],
+    duration: 600,
+    delay: 600,
   })
 
   return (
-    <div ref={sectionRef}>
-      <TerminalWindow title="~/projects" statusBar="NORMAL  projects  UTF-8">
-        <div data-id="projects-cmd">
+    <div ref={sectionRef} className="space-y-1.5">
+      <TerminalWindow
+        title="~/academic"
+        statusBar="NORMAL  resume  UTF-8"
+      >
+        <div data-id="resume-cmd">
           <TerminalOutput prompt="$" className="mb-4">
-            ls -la --color=auto
+            cat education.md
           </TerminalOutput>
         </div>
-        <div data-id="projects-listing">
-          <div data-id="projects-total" className="text-muted-foreground mb-1 font-sans text-xs">
-            total {projects.length}
+        <div data-id="resume-academic" className="space-y-3">
+          {academic.map((item, idx) => (
+            <AcademicCard key={idx} item={item} index={idx} />
+          ))}
+        </div>
+      </TerminalWindow>
+
+      <TerminalWindow title="~/projects">
+        <div data-id="resume-projects">
+          <div className="min-h-[300px]">
+            <Masonry
+              items={masonryItems}
+              renderItem={(item) => <ProjectCard item={item} />}
+              ease="power3.out"
+              duration={0.6}
+              stagger={0.05}
+              animateFrom="bottom"
+              scaleOnHover={false}
+              blurToFocus={false}
+            />
           </div>
-          <div className="overflow-x-auto font-sans text-xs leading-relaxed">
-            <div className="min-w-[400px]">
-              <div className="flex gap-2 text-muted-foreground border-b border-border pb-1 mb-1">
-                <span className="w-[34px] shrink-0">perms</span>
-                <span className="w-4 shrink-0 text-right hidden sm:block">#</span>
-                <span className="w-12 shrink-0 hidden md:block">owner</span>
-                <span className="w-12 shrink-0 hidden lg:block">group</span>
-                <span className="w-14 shrink-0 text-right">size</span>
-                <span className="w-28 shrink-0 hidden sm:block">modified</span>
-                <span className="flex-1">name</span>
-              </div>
-              <LsListing items={projects} showTotal={false} rowIdPrefix="projects-row" />
-            </div>
-          </div>
+        </div>
+      </TerminalWindow>
+
+      <TerminalWindow title="~/certifications">
+        <div data-id="resume-cmd">
+          <TerminalOutput prompt="$" className="mb-4">
+            cat certifications.json
+          </TerminalOutput>
+        </div>
+        <div data-id="resume-certifications" className="space-y-3">
+          {certifications.map((item, idx) => (
+            <CertCard key={idx} item={item} index={idx} />
+          ))}
         </div>
       </TerminalWindow>
     </div>
