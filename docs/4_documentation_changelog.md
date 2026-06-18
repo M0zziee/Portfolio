@@ -1,5 +1,86 @@
 # Changelog — Layout & Content Changes
 
+## Session 9 — Contact Section Rewrite + Instagram Icon + Photo Card Tech Row
+
+### Files Modified
+
+| File | Changes |
+|---|---|
+| `src/sections/ContactSection.jsx` | Full rewrite: added controlled inputs (`useState` for name, email, message), client-side validation (required fields + email regex with terminal-style error messages), status state machine (`idle`/`loading`/`success`/`error`) with corresponding UI, clickable email display via `echo $EMAIL`, social links section using `SocialLinks` component |
+| `src/data/portfolio.js` | Added `email` field and export |
+| `src/components/SocialLinks.jsx` | Added Instagram SVG brand icon and `hover:text-[#E4405F]` color |
+| `src/components/ProjectCard.jsx` | Added Tech row to photo card variant (was missing) |
+
+### ContactSection — Controlled Form & Validation
+
+The contact form previously had no state management, no validation, and no `onSubmit` handler — clicking Send would reload the page.
+
+**After:**
+- **Controlled inputs** via `useState` for `name`, `mail`, `message`
+- **Client-side validation** on submit: required checks + email regex (`/^[^\s@]+@[^\s@]+\.[^\s@]+$/`). Errors shown as `! error: ...` in `text-destructive` below each field
+- **Status state machine**: `"idle"` → `"loading"` (button shows `[Sending...]`, disabled) → `"success"` (green `✓ mail sent successfully!`) or `"error"` (red `✗ failed to send mail. try again later.`)
+- **Form action** not yet wired — `handleSubmit` validates and returns, with `// TODO: wire up Formspree or email service`
+
+### ContactSection — Email & Social Links
+
+Added below the form, separated by `Separator`:
+- **`echo $EMAIL`** block — clickable `mailto:` link using the new `email` field from `portfolio.js`
+- **Social links** — `SocialLinks` component with `socialLinks` data from `portfolio.js`
+
+Both sections have `useAnimateIn` staggered entrance animations.
+
+### SocialLinks — Instagram Icon Added
+
+The `icons` map previously only had `github`, `linkedin`, and `x`. Added Instagram SVG path + `hover:text-[#E4405F]` brand color. Instagram links now display the camera icon and brand-color hover.
+
+### ProjectCard — Photo Card Tech Row
+
+The photo card variant (`if (item.img)`) was missing the Tech row. Added between Status and Links in the hover overlay:
+
+```
+$ Tech: [React icon] [Node.js icon] [PostgreSQL icon]  React, Node.js, PostgreSQL
+```
+
+Uses the same `techIconMap` and white-on-dark styling as the rest of the photo overlay.
+
+## Session 8 — Home Section Enhancement + Terminal Focus Fix
+
+### Files Modified
+
+| File | Changes |
+|---|---|
+| `src/sections/HomeSection.jsx` | Added social buttons, resume download, rotating terminal quote line, and avatar overlay. Restructured text column spacing |
+| `src/components/TerminalShell.jsx` | Scoped global click listener to only focus input when clicking inside terminal |
+| `src/data/portfolio.js` | Added Instagram to `socialLinks` |
+
+### HomeSection — Social & Resume Buttons
+
+Added a row of buttons below the description text:
+- **Social buttons** — 4 icon-only `outline` buttons for GitHub, LinkedIn, Instagram, X using `react-icons/fa` and `react-icons/si`
+- **Resume button** — `default` button with `Download` icon, links to `/resume.pdf`
+
+### HomeSection — Rotating Terminal Quote Line
+
+Added between the greeting heading and the tagline/description block:
+- Displays a random quote from `portfolio.js` `quotes[]` with a `$` prompt prefix and `border-l-2` accent
+- Uses `TypewriterText` with `key={quoteIndex}` to retype each new quote
+- Quote rotates every 7 seconds via `setInterval`, with a `do...while` guard to prevent repeats
+
+### HomeSection — Avatar Overlay
+
+- `Avatar.png` imported from `src/assets/`
+- Positioned `absolute` over the top-right of the PixelTransition GIF, shifted right via `translate-x-20`
+
+### TerminalShell — Click Focus Scoped
+
+**Before:** Global `document.addEventListener("click", ...)` focused the terminal input on every click anywhere on the page, causing clicks in HomeSection to steal focus.
+
+**After:** Added `terminalRef` to the terminal wrapper. The click handler now checks `terminalRef.current?.contains(e.target)` before focusing — only clicks inside the terminal itself trigger focus.
+
+### Data Changes
+
+- `socialLinks` array in `portfolio.js` now includes `{ platform: "instagram", url: "https://instagram.com/mozzy" }`
+
 ## Session 7 — Masonry Container Auto-Height
 
 ### Files Modified

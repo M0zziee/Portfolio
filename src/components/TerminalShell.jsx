@@ -10,14 +10,17 @@ function TerminalShell({ quotes, className }) {
   const [histIndex, setHistIndex] = useState(-1);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
+  const terminalRef = useRef(null);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [history]);
 
-  const handleDocumentClick = useCallback(() => {
-    inputRef.current?.focus();
+  const handleDocumentClick = useCallback((e) => {
+    if (terminalRef.current?.contains(e.target)) {
+      inputRef.current?.focus();
+    }
   }, []);
 
   useEffect(() => {
@@ -125,7 +128,7 @@ function TerminalShell({ quotes, className }) {
   };
 
   return (
-    <div className={cn("border border-border bg-muted/20", className)}>
+    <div ref={terminalRef} className={cn("border border-border bg-muted/20", className)}>
       <div
         ref={scrollRef}
         className="max-h-48 overflow-y-auto p-2 space-y-0.5 font-sans text-xs scroll-smooth"

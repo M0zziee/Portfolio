@@ -86,7 +86,7 @@ src/
 │   ├── PixelTransition.css
 │   ├── PixelSnow.jsx
 │   ├── TerminalShell.jsx    ← Interactive mini-shell with fortune/quotes
-│   ├── SocialLinks.jsx      ← Brand-icon social links with hover animation
+│   ├── SocialLinks.jsx      ← Brand-icon social links with hover animation (github, linkedin, x, instagram)
 │   ├── Masonry.jsx          ← GSAP-powered masonry grid for project cards
 │   ├── ProjectCard.jsx      ← Rich project card with tech icons + status
 │   ├── AcademicCard.jsx     ← Education card with achievement tags
@@ -109,7 +109,7 @@ All sections use the `useAnimateIn` hook for mount-triggered entrance animations
 - **About**: command → text lines → terminal shell → social links, sequential top-to-bottom stagger
 - **Skills**: categories slide from left, badges pop in with scale stagger
 - **Projects**: header → total → rows, with rows sliding from right
-- **Contact**: command → fields (one-by-one) → send button pulses in last
+- **Contact**: command → fields (one-by-one) → send button → email info → social links, staggered sequentially
 - **Resume**: four staggered groups (cmd → academic → projects → certifications) with GSAP-based Masonry entrance (items animate from configurable direction)
 
 All animations respect the terminal "printed output" feel — elements emerge from below with staggered delays.

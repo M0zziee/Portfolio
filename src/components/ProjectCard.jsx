@@ -113,6 +113,18 @@ function ProjectCard({ item }) {
               <span className="text-white/70">{statusLabels[item.status]}</span>
             </div>
 
+            <div className="flex items-center gap-1.5">
+              <span className="text-white/50 select-none shrink-0">$</span>
+              <span className="text-white/50 shrink-0">Tech:</span>
+              <div className="flex items-center gap-1">
+                {item.tech?.map((t) => {
+                  const Icon = techIconMap[t]
+                  return Icon ? <Icon key={t} className="size-3.5 text-white/70" /> : null
+                })}
+              </div>
+              <span className="text-white/60 truncate">{item.tech?.join(", ")}</span>
+            </div>
+
             {(item.github || item.demo) && (
               <div className="flex items-start gap-1.5">
                 <span className="text-white/50 select-none shrink-0">$</span>

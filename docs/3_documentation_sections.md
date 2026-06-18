@@ -10,7 +10,7 @@ The portfolio is a **single-page layout** with tab-based navigation. Sections ar
 | `AboutSection.jsx` | home | `cat about.md` styled bio + interactive fortune shell + social links — rendered below HomeSection |
 | `SkillsSection.jsx` | home | Skills grouped by category with badges + tech logo carousel + interactive skill detail panel — rendered below AboutSection |
 | `ProjectsSection.jsx` | resume | Three stacked terminal windows: Academic cards (`~/academic`) → Masonry project grid (`~/projects`) → Certification cards (`~/certifications`) |
-| `ContactSection.jsx` | contact | Terminal-styled contact form (`mail --send`) |
+| `ContactSection.jsx` | contact | Terminal-styled contact form with controlled inputs, validation, status feedback, clickable email display, and social links |
 
 > **Note:** The **home** tab renders three sections stacked: `HomeSection` → `AboutSection` → `SkillsSection`. This was done to consolidate the landing page while keeping each section as a self-contained component.
 >
@@ -88,7 +88,13 @@ const socialLinks = [
   ...
 ]
 ```
-Array of social platform objects rendered by the `SocialLinks` component. Supported platforms: `github`, `linkedin`, `x`. Each platform maps to an inline SVG brand icon.
+Array of social platform objects rendered by the `SocialLinks` component. Supported platforms: `github`, `linkedin`, `x`, `instagram`. Each platform maps to an inline SVG brand icon.
+
+### `email`
+```js
+const email = "mozzy@example.com"
+```
+Your contact email address. Displayed in `ContactSection` as a clickable `mailto:` link under `$ echo $EMAIL`. Update this to your real email.
 
 ### `skillDetail`
 ```js

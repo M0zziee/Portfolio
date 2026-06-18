@@ -392,11 +392,11 @@ import { SocialLinks } from "@/components/SocialLinks"
 | `links` | `{ platform, url }[]` | — | Array of social platform entries |
 | `className` | `string` | — | Additional Tailwind classes |
 
-**Supported platforms:** `github`, `linkedin`, `x` — each has a brand SVG icon built in.
+**Supported platforms:** `github`, `linkedin`, `x`, `instagram` — each has a brand SVG icon built in.
 
 **Hover behavior:**
 - `scale(1.02)` + slight right translate
-- Color shifts to platform brand color (GitHub: white, LinkedIn: `#0a66c2`, X: `#1d9bf0`)
+- Color shifts to platform brand color (GitHub: white, LinkedIn: `#0a66c2`, X: `#1d9bf0`, Instagram: `#E4405F`)
 - Icon, platform name, and URL all transition smoothly via `transition-all duration-200`
 
 **Example:**
@@ -521,6 +521,7 @@ import ProjectCard from "@/components/ProjectCard"
 │  │  ┌── hover overlay ────────┐   │       │
 │  │  │  $ Description: ...     │   │       │
 │  │  │  $ Status:  ● active    │   │       │
+│  │  │  $ Tech:    [R][N][P]   │   │       │
 │  │  │  $ Links:   github demo │   │       │
 │  │  └─────────────────────────┘   │       │
 │  └─────────────────────────────────┘       │
@@ -539,7 +540,7 @@ import ProjectCard from "@/components/ProjectCard"
 **Behavior (photo card mode):**
 - Same terminal title bar with traffic-light dots, project name, and status dot
 - Image fills the card body via `object-cover`
-- On hover, a dark gradient overlay (`from-black/85 via-black/60 to-transparent`) slides up and fades in (same animejs animation as default mode) showing Description, Status, and clickable GitHub/Demo links
+- On hover, a dark gradient overlay (`from-black/85 via-black/60 to-transparent`) slides up and fades in (same animejs animation as default mode) showing Description, Status, Tech icons, and clickable GitHub/Demo links
 - `pointer-events-none` is omitted so links in the overlay are clickable
 
 ---

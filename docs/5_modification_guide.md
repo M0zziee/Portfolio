@@ -192,13 +192,14 @@ Edit `socialLinks` in `src/data/portfolio.js:220-224`:
 const socialLinks = [
   { platform: "github", url: "https://github.com/mozzy" },
   { platform: "linkedin", url: "https://linkedin.com/in/mozzy" },
+  { platform: "instagram", url: "https://instagram.com/mozzy" },
   { platform: "x", url: "https://x.com/mozzy" },
 ];
-// Supported platforms: "github", "linkedin", "x"
+// Supported platforms: "github", "linkedin", "x", "instagram"
 // Each platform must have a matching SVG icon in SocialLinks component
 ```
 
-To add a new platform, you must also add its icon to `src/components/SocialLinks.jsx`.
+To add a new platform, you must also add its icon to `src/components/SocialLinks.jsx` — add an SVG path to the `icons` object and a brand color to `platformColors`.
 
 ---
 
@@ -361,6 +362,8 @@ To show a `.png`/`.gif` image inside a project card instead of terminal output:
 
 4. **The photo card uses `object-cover`** — the image fills the card area while preserving aspect ratio. Adjust `height` in the project data to control the card size.
 
+5. **The photo card hover overlay shows Tech icons** — same `techIconMap` as the text card. Set `tech: ["React", "Node.js", ...]` on the project entry to display tech icons in the overlay.
+
 To add **multiple** photo cards, repeat steps 1-3: import each file and add one entry to `projectImages`.
 
 ### Add/Edit Certifications
@@ -387,33 +390,85 @@ const certifications = [
 
 ### Change Form Fields
 
-Lines 43-52 — edit labels and placeholders:
+The form uses controlled inputs with `useState`. Edit the labels, placeholders, and state:
 
 ```jsx
-<form className="space-y-3">
-  <div data-id="contact-field">
-    <TerminalInput label="name" placeholder="your name" />
-  </div>
-  <div data-id="contact-field">
-    <TerminalInput label="email" type="email" placeholder="you@example.com" />
-  </div>
-  <div data-id="contact-field">
-    <TerminalTextarea label="message" placeholder="say something..." />
-  </div>
-  ...
-</form>
+const [name, setName] = useState("")
+const [mail, setMail] = useState("")
+const [message, setMessage] = useState("")
+
+// ...
+
+<TerminalInput
+  label="name"              // ← change label text
+  placeholder="your name"   // ← change placeholder
+  value={name}
+  onChange={(e) => setName(e.target.value)}
+  required
+/>
+
+<TerminalInput
+  label="email"
+  type="email"
+  placeholder="you@example.com"
+  value={mail}
+  onChange={(e) => setMail(e.target.value)}
+  required
+/>
+
+<TerminalTextarea
+  label="message"
+  placeholder="say something..."
+  value={message}
+  onChange={(e) => setMessage(e.target.value)}
+  required
+/>
 ```
 
-To add/remove fields, duplicate or remove `div[data-id="contact-field"]` blocks.
+To add/remove fields, duplicate/remove the `div[data-id="contact-field"]` block and add corresponding `useState`.
 
 ### Change Submit Button
 
-Lines 53-63:
+```jsx
+<Button type="submit" size="sm" variant="default" disabled={status === "loading"}>
+  {status === "loading" ? "[Sending...]" : "[Send]"}
+</Button>
+```
+
+The button shows `[Sending...]` and disables itself during submission.
+
+### Wire Up Email Service (TODO)
+
+The `handleSubmit` function validates then returns. To make it functional, replace the TODO:
 
 ```jsx
-<Button type="submit" size="sm" variant="default">
-  [Send]    // ← change button text
-</Button>
+const handleSubmit = async (e) => {
+  e.preventDefault()
+  if (!validate()) return
+  setStatus("loading")
+
+  try {
+    // Example with fetch + Formspree:
+    const res = await fetch("https://formspree.io/f/YOUR_FORM_ID", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email: mail, message }),
+    })
+    if (!res.ok) throw new Error("send failed")
+    setStatus("success")
+    setName(""); setMail(""); setMessage("")
+  } catch {
+    setStatus("error")
+  }
+}
+```
+
+### Change Contact Email
+
+Edit the `email` field in `src/data/portfolio.js`:
+
+```js
+const email = "mozzy@example.com"   // ← change to your email
 ```
 
 ---
@@ -493,15 +548,18 @@ Defined in `src/index.css` under `@theme inline`:
 | Academic entries | `src/data/portfolio.js` | 117-132 |
 | Certifications | `src/data/portfolio.js` | 134-149 |
 | Portfolio tech (carousel) | `src/data/portfolio.js` | 151-218 |
-| Social links | `src/data/portfolio.js` | 220-224 |
-| About bio lines | `src/data/portfolio.js` | 226-234 |
+| Social links | `src/data/portfolio.js` | 222-226 |
+| About bio lines | `src/data/portfolio.js` | 228-236 |
+| Email address | `src/data/portfolio.js` | 220 |
 | Greeting text | `src/sections/HomeSection.jsx` | 41-42 |
 | Rotating words | `src/sections/HomeSection.jsx` | 54 |
 | Description text | `src/sections/HomeSection.jsx` | 65 |
 | GIF assets | `src/sections/HomeSection.jsx` | 12-13 |
 | PixelSnow config | `src/App.jsx` | 30-37 |
 | Tab switch animation | `src/App.jsx` | 19-26 |
-| Contact form fields | `src/sections/ContactSection.jsx` | 43-63 |
+| Contact form fields + validation | `src/sections/ContactSection.jsx` | 43-120 |
+| Contact email | `src/data/portfolio.js` | 220 |
+| SocialLinks supported platforms | `src/components/SocialLinks.jsx` | 4-27 |
 | PixelTransition config | `src/sections/HomeSection.jsx` | 74-94 |
 | LogoLoop config | `src/sections/SkillsSection.jsx` | 118-146 |
 | Masonry config | `src/sections/ProjectsSection.jsx` | 78-87 |

@@ -94,8 +94,9 @@ const projects = [
     id: 0,
     image: "Caffeinance.png",
     name: "caffeinance",
-    description: "My photo",
-    tech: [],
+    description:
+      "Caffeinance adalah platform Virtual CFO dan Business Analytics berbasis kecerdasan buatan (AI) yang dirancang khusus untuk membantu pemilik kedai kopi (Coffee Shop) mengatasi masalah Financial Blindspot",
+    tech: ["React", "Node.js", "PostgreSQL", "Tailwind CSS", "Docker"],
     github: "https://github.com/M0zziee/Caffeinance",
     demo: "https://caffeinance.izumi-dev.my.id/",
     status: "active",
@@ -104,7 +105,8 @@ const projects = [
   {
     id: 1,
     name: "ecommerce-platform",
-    description: "Full-stack e-commerce platform with payment gateway, inventory management, and real-time order tracking",
+    description:
+      "Full-stack e-commerce platform with payment gateway, inventory management, and real-time order tracking",
     tech: ["React", "Node.js", "PostgreSQL"],
     github: "https://github.com/mozzy/ecommerce-platform",
     demo: null,
@@ -114,7 +116,8 @@ const projects = [
   {
     id: 2,
     name: "cli-toolkit",
-    description: "Command-line toolkit for automating development workflows and project scaffolding",
+    description:
+      "Command-line toolkit for automating development workflows and project scaffolding",
     tech: ["Go", "Node.js"],
     github: "https://github.com/mozzy/cli-toolkit",
     demo: null,
@@ -124,7 +127,8 @@ const projects = [
   {
     id: 3,
     name: "api-gateway",
-    description: "API gateway service handling routing, authentication, rate limiting across microservices",
+    description:
+      "API gateway service handling routing, authentication, rate limiting across microservices",
     tech: ["Node.js", "Redis", "Docker"],
     github: "https://github.com/mozzy/api-gateway",
     demo: null,
@@ -134,7 +138,8 @@ const projects = [
   {
     id: 4,
     name: "design-system",
-    description: "Reusable component library with design tokens, documentation, and accessibility-first components",
+    description:
+      "Reusable component library with design tokens, documentation, and accessibility-first components",
     tech: ["React", "TypeScript", "Tailwind CSS"],
     github: "https://github.com/mozzy/design-system",
     demo: null,
@@ -284,10 +289,16 @@ const portfolioTech = [
   },
 ];
 
+const email = "fathirramada@gmail.com";
+
 const socialLinks = [
-  { platform: "github", url: "https://github.com/mozzy" },
-  { platform: "linkedin", url: "https://linkedin.com/in/mozzy" },
-  { platform: "x", url: "https://x.com/mozzy" },
+  { platform: "github", url: "https://github.com/M0zziee" },
+  {
+    platform: "linkedin",
+    url: "https://www.linkedin.com/in/muhammadfathirramada",
+  },
+  { platform: "instagram", url: "https://instagram.com/fathir_ramada02" },
+  { platform: "x", url: "https://x.com/m0zzy_02" },
 ];
 
 const aboutLines = [
@@ -296,8 +307,7 @@ const aboutLines = [
   " ",
   "Beyond web development, I'm continuously exploring systems programming and low-level technologies to better understand how software works under the hood.",
   " ",
-  "When I'm not coding, you'll probably find me customizing my Neovim setup, experimenting with Linux, or contributing to",
-  "open-source projects.",
+  "When I'm not coding, you'll probably find me customizing my Neovim setup, experimenting with Linux, or contributing to open-source projects.",
 ];
 
 export {
@@ -311,5 +321,6 @@ export {
   aboutLines,
   quotes,
   socialLinks,
+  email,
   portfolioTech,
 };
